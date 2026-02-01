@@ -252,6 +252,7 @@ describe("anchor-nft-staking-q4-25", () => {
           stakeAccount: stakeAccountPda,
           config: configPda,
           userAccount: userAccountPda,
+          collectionInfo: collectionInfoPda,
           coreProgram: MPL_CORE_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
         })
@@ -264,8 +265,7 @@ describe("anchor-nft-staking-q4-25", () => {
       try {
         await program.account.stakeAccount.fetch(stakeAccountPda);
         assert.fail("Stake account should be closed");
-      } catch (err) {
-        // Expected - account should be closed
+      } catch {
         console.log("Stake account closed successfully");
       }
 
