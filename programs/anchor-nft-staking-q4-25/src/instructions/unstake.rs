@@ -15,12 +15,20 @@ pub struct Unstake<'info> {
     #[account(mut)]
     pub user: Signer<'info>,
 
-    #[account(mut)]
-    /// CHECK: Verified by mpl-core
+    #[account(
+        mut,
+        constraint = asset.owner == &CORE_PROGRAM_ID @ StakeError::InvalidAsset,
+        constraint = !asset.data_is_empty() @ StakeError::InvalidAsset,
+    )]
+    /// CHECK: Owner and data constraints verify this is a valid MPL Core asset
     pub asset: UncheckedAccount<'info>,
 
-    #[account(mut)]
-    /// CHECK: Verified by mpl-core
+    #[account(
+        mut,
+        constraint = collection.owner == &CORE_PROGRAM_ID @ StakeError::InvalidCollection,
+        constraint = !collection.data_is_empty() @ StakeError::InvalidCollection,
+    )]
+    /// CHECK: Owner and data constraints verify this is a valid MPL Core collection
     pub collection: UncheckedAccount<'info>,
 
     #[account(
@@ -28,6 +36,7 @@ pub struct Unstake<'info> {
         close = user,
         seeds = [b"stake", config.key().as_ref(), asset.key().as_ref()],
         bump = stake_account.bump,
+        constraint = stake_account.owner == user.key() @ StakeError::Unauthorized,
     )]
     pub stake_account: Account<'info, StakeAccount>,
 

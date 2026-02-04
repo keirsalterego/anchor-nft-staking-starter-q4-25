@@ -20,4 +20,6 @@ pub enum StakeError {
     AssetAlreadyInitialized,
     #[msg("Not Owner")]
     NotOwner,
+    #[msg("Unauthorized")]
+    Unauthorized,
 }
